@@ -1,0 +1,921 @@
+{
+  "contractDigest": "a6cdf1be65f4bcb63fd16c07820052f53ccff30819262ec5393061ac44e03956",
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/products/loadbalancer/create",
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerApiController.php:212",
+      "required_fields": [
+        "name",
+        "location_id",
+        "cluster_id",
+        "plan_id"
+      ],
+      "response_id_path": "data.loadbalancer.id",
+      "body": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "roundrobin",
+              "leastconn",
+              "source"
+            ],
+            "x-validation": [
+              "sometimes",
+              "string",
+              "in:roundrobin,leastconn,source"
+            ],
+            "x-validation-expressions": []
+          },
+          "cluster_id": {
+            "type": "string",
+            "format": "uuid",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:rootserver_clusters,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "location_id": {
+            "type": "string",
+            "format": "uuid",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:rootserver_locations,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "x-validation": [
+              "required",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "plan_id": {
+            "type": "string",
+            "format": "uuid",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:loadbalancer_plans,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "sticky_sessions": {
+            "type": "boolean",
+            "x-validation": [
+              "sometimes",
+              "boolean"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "cluster_id",
+          "location_id",
+          "name",
+          "plan_id"
+        ]
+      },
+      "bodyRequired": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "loadbalancer:create"
+      ],
+      "responseMode": "json"
+    },
+    {
+      "id": "GET /products/loadbalancer/{lb}",
+      "group": "loadbalancer",
+      "name": "get",
+      "method": "GET",
+      "path": "/products/loadbalancer/{lb}",
+      "summary": "Show Load Balancer details",
+      "description": "Returns detailed information about a specific load balancer including backends, domains, and rules.",
+      "germanSummary": "Load-Balancer-Details anzeigen",
+      "permissions": [
+        "loadbalancer:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Load Balancer details",
+          "germanDescription": "Load-Balancer-Details",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerApiController.php:82",
+      "routeName": "api.loadbalancer.show"
+    },
+    {
+      "method": "POST",
+      "path": "/products/loadbalancer/{lb}/delete",
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerApiController.php:275",
+      "semantics": "schedule deletion in48hours",
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "loadbalancer:delete"
+      ],
+      "responseMode": "json"
+    },
+    {
+      "id": "GET /products/loadbalancer/{lb}/backends",
+      "group": "loadbalancer",
+      "name": "backendsIndex",
+      "method": "GET",
+      "path": "/products/loadbalancer/{lb}/backends",
+      "summary": "List backends",
+      "description": "Returns all backends for a load balancer.",
+      "germanSummary": "Backends auflisten",
+      "permissions": [
+        "loadbalancer:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "List of backends",
+          "germanDescription": "Liste der Backends",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerBackendController.php:33",
+      "routeName": "api.loadbalancer.backends.index"
+    },
+    {
+      "id": "GET /products/loadbalancer/{lb}/domains",
+      "group": "loadbalancer",
+      "name": "domainsIndex",
+      "method": "GET",
+      "path": "/products/loadbalancer/{lb}/domains",
+      "summary": "List domains",
+      "description": "Returns all domains for a load balancer.",
+      "germanSummary": "Domains auflisten",
+      "permissions": [
+        "loadbalancer:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "List of domains",
+          "germanDescription": "Liste der Domains",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerDomainController.php:35",
+      "routeName": "api.loadbalancer.domains.index"
+    },
+    {
+      "id": "GET /products/loadbalancer/{lb}/rules",
+      "group": "loadbalancer",
+      "name": "rulesIndex",
+      "method": "GET",
+      "path": "/products/loadbalancer/{lb}/rules",
+      "summary": "List routing rules",
+      "description": "Returns all routing rules for a load balancer, ordered by priority.",
+      "germanSummary": "Routing-Regeln auflisten",
+      "permissions": [
+        "loadbalancer:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "List of rules",
+          "germanDescription": "Liste der Regeln",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerRuleController.php:33",
+      "routeName": "api.loadbalancer.rules.index"
+    },
+    {
+      "id": "GET /products/loadbalancer/{lb}/stats",
+      "group": "loadbalancer",
+      "name": "stats",
+      "method": "GET",
+      "path": "/products/loadbalancer/{lb}/stats",
+      "summary": "Get Load Balancer statistics",
+      "description": "Returns traffic statistics for a load balancer. Supports period filters: 1h, 24h, 7d, 30d.",
+      "germanSummary": "Load-Balancer-Statistiken abrufen",
+      "permissions": [
+        "loadbalancer:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "description": "Time period (1h, 24h, 7d, 30d)",
+            "type": "string",
+            "default": "24h"
+          }
+        },
+        "additionalProperties": true,
+        "required": []
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Load Balancer statistics",
+          "germanDescription": "Load-Balancer-Statistiken",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerApiController.php:163",
+      "routeName": "api.loadbalancer.stats"
+    },
+    {
+      "id": "POST /products/loadbalancer/{lb}/backends/create",
+      "group": "loadbalancer",
+      "name": "backendsCreate",
+      "method": "POST",
+      "path": "/products/loadbalancer/{lb}/backends/create",
+      "summary": "Add backend",
+      "description": "Adds a new backend server to a load balancer.",
+      "germanSummary": "Backend hinzufuegen",
+      "permissions": [
+        "loadbalancer:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "backend_group": {
+            "type": "string",
+            "maxLength": 64,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:64"
+            ],
+            "x-validation-expressions": []
+          },
+          "ip_address": {
+            "type": "string",
+            "x-validation": [
+              "required",
+              "ip"
+            ],
+            "x-validation-expressions": []
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "x-validation": [
+              "required",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535,
+            "x-validation": [
+              "required",
+              "integer",
+              "min:1",
+              "max:65535"
+            ],
+            "x-validation-expressions": []
+          },
+          "weight": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 256,
+            "x-validation": [
+              "sometimes",
+              "integer",
+              "min:1",
+              "max:256"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "ip_address",
+          "name",
+          "port"
+        ]
+      },
+      "bodyRequired": true,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 201,
+          "description": "Backend created",
+          "germanDescription": "Backend erstellt",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerBackendController.php:56",
+      "routeName": "api.loadbalancer.backends.create",
+      "label": "Backend hinzufügen"
+    },
+    {
+      "id": "POST /products/loadbalancer/{lb}/rules/create",
+      "group": "loadbalancer",
+      "name": "rulesCreate",
+      "method": "POST",
+      "path": "/products/loadbalancer/{lb}/rules/create",
+      "summary": "Add routing rule",
+      "description": "Adds a routing rule to a load balancer.",
+      "germanSummary": "Routing-Regel hinzufuegen",
+      "permissions": [
+        "loadbalancer:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "forward",
+              "redirect",
+              "deny"
+            ],
+            "x-validation": [
+              "required",
+              "string",
+              "in:forward,redirect,deny"
+            ],
+            "x-validation-expressions": []
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "match_type": {
+            "type": "string",
+            "enum": [
+              "host",
+              "path",
+              "header"
+            ],
+            "x-validation": [
+              "required",
+              "string",
+              "in:host,path,header"
+            ],
+            "x-validation-expressions": []
+          },
+          "match_value": {
+            "type": "string",
+            "maxLength": 255,
+            "x-validation": [
+              "required",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9999,
+            "x-validation": [
+              "sometimes",
+              "integer",
+              "min:1",
+              "max:9999"
+            ],
+            "x-validation-expressions": []
+          },
+          "redirect_url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048,
+            "nullable": true,
+            "x-validation": [
+              "required_if:action,redirect",
+              "nullable",
+              "url",
+              "max:2048"
+            ],
+            "x-validation-expressions": []
+          },
+          "target_backend_group": {
+            "type": "string",
+            "maxLength": 64,
+            "nullable": true,
+            "x-validation": [
+              "required_if:action,forward",
+              "nullable",
+              "string",
+              "max:64"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "action",
+          "match_type",
+          "match_value"
+        ]
+      },
+      "bodyRequired": true,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 201,
+          "description": "Rule created",
+          "germanDescription": "Regel erstellt",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerRuleController.php:56",
+      "routeName": "api.loadbalancer.rules.create",
+      "label": "Regel erstellen"
+    },
+    {
+      "id": "POST /products/loadbalancer/{lb}/update",
+      "group": "loadbalancer",
+      "name": "update",
+      "method": "POST",
+      "path": "/products/loadbalancer/{lb}/update",
+      "summary": "Update Load Balancer settings",
+      "description": "Updates load balancer settings (name, algorithm, sticky sessions, health checks).",
+      "germanSummary": "Load-Balancer-Einstellungen aktualisieren",
+      "permissions": [
+        "loadbalancer:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "lb",
+          "type": "string",
+          "description": "lb route parameter"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "roundrobin",
+              "leastconn",
+              "source"
+            ],
+            "x-validation": [
+              "sometimes",
+              "string",
+              "in:roundrobin,leastconn,source"
+            ],
+            "x-validation-expressions": []
+          },
+          "health_check_interval": {
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 300,
+            "x-validation": [
+              "sometimes",
+              "integer",
+              "min:5",
+              "max:300"
+            ],
+            "x-validation-expressions": []
+          },
+          "health_check_path": {
+            "type": "string",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "sticky_sessions": {
+            "type": "boolean",
+            "x-validation": [
+              "sometimes",
+              "boolean"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": []
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Load Balancer updated",
+          "germanDescription": "Load Balancer aktualisiert",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/LoadBalancer/LoadBalancerApiController.php:242",
+      "routeName": "api.loadbalancer.update",
+      "label": "Einstellungen"
+    },
+    {
+      "id": "GET /account",
+      "group": "account",
+      "name": "get",
+      "method": "GET",
+      "path": "/account",
+      "summary": "Get account details",
+      "description": "Returns the authenticated reseller account details including company information, contact details, tax information, enabled products, and credit balance.",
+      "germanSummary": "Kontoinformationen abrufen",
+      "permissions": [
+        "account:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Account details",
+          "germanDescription": "Kontoinformationen",
+          "schema": null,
+          "example": {
+            "success": true,
+            "data": {
+              "id": "9e1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+              "company_name": "Example GmbH",
+              "contact_name": "Max Mustermann",
+              "email": "max@example.com",
+              "phone": "+49 123 456789",
+              "address": "Musterstraße 1",
+              "city": "Berlin",
+              "zip": "10115",
+              "country": "DE",
+              "tax_id": "DE123456789",
+              "tax_type": "eu_vat",
+              "status": "active",
+              "enabled_products": [
+                "rootserver",
+                "domains",
+                "kubernetes"
+              ],
+              "is_main_reseller": true,
+              "credit_limit": "500.00",
+              "credit_used": "123.45",
+              "credit_available": "376.55",
+              "created_at": "2025-01-15T10:30:00.000000Z"
+            }
+          },
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Account/AccountController.php:53",
+      "routeName": "api.account.show"
+    },
+    {
+      "id": "PATCH /account",
+      "group": "account",
+      "name": "update",
+      "method": "PATCH",
+      "path": "/account",
+      "summary": "Update account details",
+      "description": "Updates non-critical account fields such as company name, contact name, phone, and address. Email, tax ID, and status cannot be changed via API.",
+      "germanSummary": "Kontoinformationen aktualisieren",
+      "permissions": [
+        "account:update"
+      ],
+      "authenticated": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string",
+            "description": "Company name",
+            "example": "Example GmbH",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "contact_name": {
+            "type": "string",
+            "description": "Contact person name",
+            "example": "Max Mustermann",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number",
+            "example": "+49 123 456789",
+            "maxLength": 50,
+            "nullable": true,
+            "x-validation": [
+              "sometimes",
+              "nullable",
+              "string",
+              "max:50"
+            ],
+            "x-validation-expressions": []
+          },
+          "address": {
+            "type": "string",
+            "description": "Street address",
+            "example": "Musterstraße 1",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "city": {
+            "type": "string",
+            "description": "City",
+            "example": "Berlin",
+            "maxLength": 255,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:255"
+            ],
+            "x-validation-expressions": []
+          },
+          "zip": {
+            "type": "string",
+            "description": "ZIP code",
+            "example": "10115",
+            "maxLength": 20,
+            "x-validation": [
+              "sometimes",
+              "string",
+              "max:20"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": []
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Account updated successfully",
+          "germanDescription": "Konto erfolgreich aktualisiert",
+          "schema": null,
+          "example": {
+            "success": true,
+            "data": {
+              "id": "9e1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+              "company_name": "Updated GmbH",
+              "contact_name": "Max Mustermann"
+            }
+          },
+          "contentType": "application/json"
+        },
+        {
+          "status": 422,
+          "description": "Validation error",
+          "germanDescription": "Validierungsfehler",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Account/AccountController.php:92",
+      "routeName": "api.account.update"
+    }
+  ]
+}
